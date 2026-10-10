@@ -63,8 +63,9 @@ export default function AboutPage() {
               </span>
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-muted">
-              The Curries have pastored together since {leaders.pastoringSince} and lead {church.name} side by side. Apostle Currie’s main focus is delivering the gospel and,
-              in his words, “to continue to shine this little light of mine.” {leaders.lady.name} leads Elevated Minds Christian School, where every child is pushed to be great.
+              The Curries have pastored together since {leaders.pastoringSince}. Both hold doctorates, and together they lead {church.name}’s ministry and schools. Apostle
+              Currie’s main focus is delivering the gospel and, in his words, “to continue to shine this little light of mine.” {leaders.lady.name} leads Elevated Minds Christian
+              School, where every child is pushed to be great.
             </p>
             <figure className="mt-8 rounded-2xl bg-night p-7 text-white">
               <blockquote className="serif text-2xl leading-snug">

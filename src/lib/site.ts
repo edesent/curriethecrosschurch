@@ -30,10 +30,9 @@ export const church = {
 
 export const leaders = {
   apostle: { title: "Apostle", name: "Marlowe Currie" },
-  /** Dr. Alisha Currie runs Elevated Minds Christian School; confirm she is First Lady / co-pastor and how she likes to be named. */
+  /** Dr. Alisha Currie co-leads the ministry and schools with Apostle Currie. */
   lady: { title: "First Lady", name: "Dr. Alisha Currie" },
-  /** Bold Journey, July 2025: "pastoring for six years". */
-  pastoringSince: "2019",
+  pastoringSince: "2018",
 };
 
 export type Service = {
