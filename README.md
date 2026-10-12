@@ -77,7 +77,7 @@ Anything left as `""` in `site.ts` shows on the site as a dashed “fill in” b
 
 ## Forms
 
-Every form posts to `src/app/api/form/route.ts`, which sends a message to `FORM_WEBHOOK_URL` (a Slack or Teams incoming webhook). Until that env var is set, forms answer 503 and honestly tell people to call. Kinds: `ride`, `turkey`, `coat`, `serve`, `visit`, `prayer`, `contact`. Spam defences: signed load-time token, honeypot, per-IP rate limit, no links in free text (emails are allowed in contact fields).
+Every form posts to `src/app/api/form/route.ts`, which emails `FORM_TO` (curriethecrosschurch@gmail.com) through Resend, from website@curriethecrosschurch.org. That domain is verified in Resend; its DKIM, SPF, bounce MX and DMARC records are in the Route 53 zone. Env: `RESEND_API_KEY`, `FORM_TO`, `FORM_SECRET`; `FORM_WEBHOOK_URL` (Slack/Teams) is an optional second channel. With no delivery configured, forms answer 503 and honestly tell people to call. Kinds: `ride`, `turkey`, `coat`, `serve`, `visit`, `prayer`, `contact`. Spam defences: signed load-time token, honeypot, per-IP rate limit, no links in free text, first and last name required, and the contact must be a real email or a valid phone number (libphonenumber); random digits are rejected.
 
 ## Going live
 

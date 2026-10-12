@@ -8,9 +8,9 @@ import { church } from "@/lib/site";
  * Coat Drive (sign up / donate a coat / serve), plan-a-visit, prayer, contact.
  *
  * Messages are emailed to the church through Resend:
- *   RESEND_API_KEY  the Resend key that can send from elijahdesent.com
+ *   RESEND_API_KEY  the Resend key that can send from curriethecrosschurch.org
  *   FORM_TO         where messages go (comma-separate for more than one)
- *   FORM_FROM       optional; defaults to "Currie The Cross Church website <contact@elijahdesent.com>"
+ *   FORM_FROM       optional; defaults to "Currie The Cross Church website <website@curriethecrosschurch.org>"
  * FORM_WEBHOOK_URL (a Slack or Teams incoming webhook) also works, alone or as
  * well as email. With neither set the endpoint answers 503 and the form
  * honestly tells people to call the church.
@@ -268,7 +268,7 @@ async function sendEmail(key: string, to: string, text: string, replyTo?: string
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: process.env.FORM_FROM || `${church.name} website <contact@elijahdesent.com>`,
+      from: process.env.FORM_FROM || `${church.name} website <website@curriethecrosschurch.org>`,
       to: to.split(",").map((a) => a.trim()).filter(Boolean),
       ...(replyTo ? { reply_to: replyTo } : {}),
       subject: `[Website] ${subject}`,
