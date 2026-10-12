@@ -1,9 +1,9 @@
 # Currie The Cross Church, St. Louis
 
 Website for **Currie The Cross Church** (CTCC, “Established by Kingdom”), 4301 Page Blvd. at Page & Pendleton, St. Louis, MO 63113, in the Vandeventer neighborhood. Pastors: **Apostle Marlowe Currie** and **First Lady Dr. Alisha Currie** (see “Confirm with the church”).
-They have no working website. Their old domain, curriethecrosschurch.org, no longer resolves. Their live presence is the [Facebook page](https://www.facebook.com/curriethecrosschurch), which has about 757 followers and a Facebook Live for every service.
+Their old curriethecrosschurch.org lapsed; we re-registered it on 2026-10-12. Their live presence is the [Facebook page](https://www.facebook.com/curriethecrosschurch), which has about 757 followers and a Facebook Live for every service.
 
-Preview: https://curriethecrosschurch.dfd.llc (hidden from search engines; see “Going live”).
+Live: https://www.curriethecrosschurch.org (apex 308s to www). Registered through Amazon Route 53 (Eli's personal AWS account, auto-renew on, privacy on); DNS is in the Route 53 hosted zone: `A @ 216.150.1.1, 216.150.16.1` + `CNAME www` to the project's Vercel CNAME. The old preview, curriethecrosschurch.dfd.llc, redirects to the live domain.
 
 ## Read this before editing (for people and AI assistants)
 
@@ -81,4 +81,4 @@ Every form posts to `src/app/api/form/route.ts`, which sends a message to `FORM_
 
 ## Going live
 
-Set `NEXT_PUBLIC_SITE_URL` to the real domain (e.g. `https://www.curriethecrosschurch.org`) in Vercel and redeploy. That flips `isDemo` off (the check in `src/lib/site.ts` matches `curriethecrosschurch.org` / `.com`), which unblocks `robots.txt`, removes the `noindex` tag and fixes every canonical and structured-data URL.
+Done 2026-10-12. For reference: set `NEXT_PUBLIC_SITE_URL` to the real domain (e.g. `https://www.curriethecrosschurch.org`) in Vercel and redeploy. That flips `isDemo` off (the check in `src/lib/site.ts` matches `curriethecrosschurch.org` / `.com`), which unblocks `robots.txt`, removes the `noindex` tag and fixes every canonical and structured-data URL.
