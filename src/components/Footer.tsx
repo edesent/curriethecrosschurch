@@ -81,6 +81,12 @@ export default function Footer() {
             © {new Date().getFullYear()} {church.name} · {church.tagline}
           </p>
           <p>Map data © OpenStreetMap contributors</p>
+          <p>
+            <a href="https://elijahdesent.com/churches" className="underline-offset-4 hover:text-white hover:underline">
+              Church Website Development
+            </a>{" "}
+            by Elijah Desent
+          </p>
         </div>
       </div>
     </footer>
