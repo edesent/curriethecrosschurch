@@ -4,6 +4,7 @@ import { CashTag } from "@/components/CashTag";
 import Countdown from "@/components/Countdown";
 import DestinationSign from "@/components/DestinationSign";
 import { Blank, Fill } from "@/components/Fill";
+import { Mark } from "@/components/Logo";
 import Phone from "@/components/Phone";
 import RouteMap from "@/components/RouteMap";
 import { church, family, giving, leaders, prettyDate, turkey, turkeyIsPast, van, weekly } from "@/lib/site";
@@ -92,7 +93,8 @@ export default function Home() {
             </div>
           </div>
           <div data-reveal="1">
-            <p className="eyebrow text-royal">Welcome home</p>
+            <Mark size={320} alt="Currie The Cross Church emblem" className="h-36 w-36 drop-shadow-xl sm:h-44 sm:w-44" />
+            <p className="eyebrow mt-8 text-royal">Welcome home</p>
             <h2 className="display mt-4 text-[clamp(3rem,7vw,5.2rem)]">
               We love the Lord God <span className="text-red">&</span> the people of the Lord God.
             </h2>

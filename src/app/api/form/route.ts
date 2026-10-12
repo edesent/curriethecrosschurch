@@ -1,4 +1,5 @@
 import { createHmac, randomBytes, timingSafeEqual } from "crypto";
+import { isValidPhoneNumber } from "libphonenumber-js";
 import { NextResponse } from "next/server";
 import { church } from "@/lib/site";
 
@@ -6,20 +7,25 @@ import { church } from "@/lib/site";
  * One endpoint for every form on the site: van rides, the Turkey Giveaway &
  * Coat Drive (sign up / donate a coat / serve), plan-a-visit, prayer, contact.
  *
- * Messages go to FORM_WEBHOOK_URL — a Slack (or Teams) incoming webhook — so
- * they reach the church's phone in seconds. Until that is set the endpoint
- * answers 503 and the form honestly tells people to call the church.
+ * Messages are emailed to the church through Resend:
+ *   RESEND_API_KEY  the Resend key that can send from elijahdesent.com
+ *   FORM_TO         where messages go (comma-separate for more than one)
+ *   FORM_FROM       optional; defaults to "Currie The Cross Church website <contact@elijahdesent.com>"
+ * FORM_WEBHOOK_URL (a Slack or Teams incoming webhook) also works, alone or as
+ * well as email. With neither set the endpoint answers 503 and the form
+ * honestly tells people to call the church.
  *
  * Spam defences: a signed load-time token (GET) that must be at least 3
- * seconds old, a honeypot field, a per-IP rate limit, and a rule that
- * free-text answers may not contain links. Anything that trips a defence gets
- * a fake success and is dropped. Email addresses are allowed in contact fields.
+ * seconds old, a honeypot field, a per-IP rate limit, a rule that free-text
+ * answers may not contain links, a first-and-last name, and a contact that
+ * must be a real phone number or email address (random digits fail). Anything
+ * that trips a silent defence gets a fake success and is dropped.
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const SECRET = process.env.FORM_SECRET || process.env.FORM_WEBHOOK_URL || "";
+const SECRET = process.env.FORM_SECRET || process.env.RESEND_API_KEY || process.env.FORM_WEBHOOK_URL || "";
 const MIN_FILL_MS = 3000;
 const MAX_AGE_MS = 1000 * 60 * 60 * 6;
 
@@ -63,6 +69,11 @@ const on = (v: unknown) => v === true || v === "on" || v === "Yes";
 const hasLink = (s: string) => /(https?:\/\/|www\.|\.(com|net|ru|xyz|top)\b)/i.test(s);
 // A "phone or email" answer: an email address is fine, a URL is not.
 const badContact = (s: string) => /(https?:\/\/|www\.)/i.test(s) || (/\.(com|net|ru|xyz|top)\b/i.test(s) && !s.includes("@"));
+const EMAIL = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+const isEmail = (s: string) => EMAIL.test(s);
+// Bots fill "phone" with ten random digits; unassigned area codes and exchanges fail this.
+const realContact = (s: string) => isEmail(s) || isValidPhoneNumber(s, "US");
+const CONTACT_ERROR = "That phone number or email doesn’t look right. Please check it.";
 const fake = () => NextResponse.json({ ok: true });
 
 type Body = Record<string, unknown>;
@@ -75,6 +86,7 @@ function base(b: Body, need: { contact?: boolean; fullName?: boolean } = {}) {
   if (need.fullName && name.split(/\s+/).filter(Boolean).length < 2) return { error: "Please give your first and last name." } as const;
   if (need.contact && !contact) return { error: "Leave a phone number or email so we can reach you." } as const;
   if (hasLink(name) || badContact(contact)) return { spam: true } as const;
+  if (contact && !realContact(contact)) return { error: CONTACT_ERROR } as const;
   return { name, contact } as const;
 }
 
@@ -124,7 +136,7 @@ const builders: Record<string, (b: Body) => Built> = {
     };
   },
   coat(b) {
-    const who = base(b, { contact: true });
+    const who = base(b, { contact: true, fullName: true });
     if (!("name" in who)) return who;
     const what = clean(b.what, 300);
     const how = clean(b.how, 60);
@@ -135,7 +147,7 @@ const builders: Record<string, (b: Body) => Built> = {
     };
   },
   serve(b) {
-    const who = base(b, { contact: true });
+    const who = base(b, { contact: true, fullName: true });
     if (!("name" in who)) return who;
     const role = clean(b.role, 80);
     const note = clean(b.note, 600);
@@ -170,6 +182,7 @@ const builders: Record<string, (b: Body) => Built> = {
     const contact = clean(b.contact, 120);
     if (!request) return { error: "Please tell us what we can pray about." };
     if ([request, name].some(hasLink) || badContact(contact)) return { spam: true };
+    if (contact && !realContact(contact)) return { error: CONTACT_ERROR };
     if (on(b.wantsCall) && !contact) return { error: "Leave a phone number or email so we can reach you." };
     return {
       text: join([
@@ -216,23 +229,56 @@ export async function POST(request: Request) {
   if ("spam" in built) return fake();
   if ("error" in built) return NextResponse.json({ error: built.error }, { status: 400 });
 
+  const key = process.env.RESEND_API_KEY;
+  const to = process.env.FORM_TO;
   const webhook = process.env.FORM_WEBHOOK_URL;
-  if (!webhook) {
+  const email = Boolean(key && to);
+  if (!email && !webhook) {
     return NextResponse.json(
       { error: "Our online form isn’t connected yet. Please call the church — we’d love to hear from you." },
       { status: 503 },
     );
   }
 
+  const contact = clean(body.contact, 120);
   try {
-    const res = await fetch(webhook, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: built.text }),
-    });
-    if (!res.ok) throw new Error(String(res.status));
+    await Promise.all([
+      email && sendEmail(key!, to!, built.text, isEmail(contact) ? contact : undefined),
+      webhook && postWebhook(webhook, built.text),
+    ]);
   } catch {
     return NextResponse.json({ error: "We couldn’t send that just now. Please call the church instead." }, { status: 502 });
   }
   return NextResponse.json({ ok: true });
+}
+
+/** The builders write Slack markdown; email gets the same lines without the markers. */
+function plain(text: string) {
+  return text
+    .split("\n")
+    .map((l) => l.replace(/^>/, "    ").replace(/\*([^*\n]+)\*/g, "$1").replace(/(^|\s)_([^_\n]+)_(?=\s|$)/g, "$1$2"))
+    .join("\n");
+}
+
+async function sendEmail(key: string, to: string, text: string, replyTo?: string) {
+  const body = plain(text);
+  const [first, ...rest] = body.split("\n");
+  const subject = first.replace(` — ${church.short} website`, "").trim();
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: process.env.FORM_FROM || `${church.name} website <contact@elijahdesent.com>`,
+      to: to.split(",").map((a) => a.trim()).filter(Boolean),
+      ...(replyTo ? { reply_to: replyTo } : {}),
+      subject: `[Website] ${subject}`,
+      text: [...rest, "", "—", replyTo ? "Sent from the form on curriethecrosschurch.org. Reply to this email to answer them." : "Sent from the form on curriethecrosschurch.org. Use the phone number above to reach them."].join("\n").trim(),
+    }),
+  });
+  if (!res.ok) throw new Error(`resend ${res.status}`);
+}
+
+async function postWebhook(url: string, text: string) {
+  const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+  if (!res.ok) throw new Error(`webhook ${res.status}`);
 }

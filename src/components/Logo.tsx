@@ -1,14 +1,14 @@
 import Image from "next/image";
 
 /** Currie The Cross Church's supplied emblem, cleaned for web use. */
-export function Mark({ className = "h-12 w-12" }: { className?: string }) {
+export function Mark({ className = "h-12 w-12", size = 64, alt = "" }: { className?: string; size?: number; alt?: string }) {
   return (
     <Image
       src="/brand/currie-the-cross-emblem.png"
-      alt=""
-      aria-hidden
-      width={64}
-      height={64}
+      alt={alt}
+      aria-hidden={!alt}
+      width={size}
+      height={size}
       className={`${className} shrink-0 object-contain`}
     />
   );
