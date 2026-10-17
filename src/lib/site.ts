@@ -50,8 +50,8 @@ export const weekly: Service[] = [
     name: "Sunday Worship",
     day: "Sunday",
     byDay: "Sunday",
-    start: "11:30",
-    time: "11:30 AM",
+    start: "11:00",
+    time: "11:00 AM",
     note: "Praise, the Word, and the whole family. Live on Facebook too.",
   },
   {
