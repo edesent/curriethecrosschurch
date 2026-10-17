@@ -230,7 +230,7 @@ function nextDays(n: number) {
     const wd = d.toLocaleDateString("en-US", { weekday: "long", timeZone: TZ });
     if (wd !== "Sunday" && wd !== "Thursday") continue;
     const iso = new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(d);
-    out.push({ iso, label: d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: TZ }) + (wd === "Sunday" ? " · 11:30 AM" : " · 6 PM") });
+    out.push({ iso, label: d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: TZ }) + (wd === "Sunday" ? " · 11:00 AM" : " · 6 PM") });
   }
   return out;
 }
