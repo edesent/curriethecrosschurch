@@ -29,7 +29,7 @@ const instrument = localFont({
   display: "swap",
 });
 
-const description = `${church.name} at ${church.street} (${church.corner}), ${church.city}, ${church.stateCode}. ${leaders.apostle.title} ${leaders.apostle.name} and ${leaders.lady.title} ${leaders.lady.name}. Sunday Worship 11:30 AM, Thursday Night Service 6 PM. ${church.welcome}`;
+const description = `${church.name} at ${church.street} (${church.corner}), ${church.city}, ${church.stateCode}. ${leaders.apostle.title} ${leaders.apostle.name} and ${leaders.lady.title} ${leaders.lady.name}. ${weekly[0].name} ${weekly[0].time}, ${weekly[1].name} ${weekly[1].time}. ${church.welcome}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
