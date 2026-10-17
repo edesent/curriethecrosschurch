@@ -5,7 +5,7 @@ import { church, podcastEpisodes, weekly } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Watch & Listen",
-  description: "Watch Currie The Cross Church live on Facebook every Sunday at 11:30 AM and Thursday at 6 PM, or listen to the podcast.",
+  description: "Watch Currie The Cross Church live on Facebook every Sunday at 11:00 AM and Thursday at 6 PM, or listen to the podcast.",
 };
 
 export default function WatchPage() {
