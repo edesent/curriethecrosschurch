@@ -107,7 +107,7 @@ export default function RidePage() {
                 <span>
                   <span className="block text-xs font-bold uppercase tracking-[0.2em] text-muted">{i === a.length - 1 ? "Arrive" : `Stop ${i + 1}`}</span>
                   <span className="mt-1 block text-lg font-extrabold leading-tight">{l === "Church" ? "4301 Page Blvd." : l}</span>
-                  {i === a.length - 1 && <span className="text-sm text-muted">4301 Page Blvd. · in time for 11:30</span>}
+                  {i === a.length - 1 && <span className="text-sm text-muted">4301 Page Blvd. · in time for 11:00</span>}
                 </span>
               </li>
             ))}
