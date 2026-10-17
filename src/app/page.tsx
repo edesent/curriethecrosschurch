@@ -9,7 +9,7 @@ import Phone from "@/components/Phone";
 import RouteMap from "@/components/RouteMap";
 import { church, family, giving, leaders, prettyDate, turkey, turkeyIsPast, van, weekly } from "@/lib/site";
 
-const signMessages = ["4301 PAGE BLVD", "NO UBER NEEDED", "SUNDAY 11:30 AM", "THURSDAY 6 PM", "TURKEYS NOV 21", "ALL ARE WELCOME"];
+const signMessages = ["4301 PAGE BLVD", "NO UBER NEEDED", "SUNDAY 11:00 AM", "THURSDAY 6 PM", "TURKEYS NOV 21", "ALL ARE WELCOME"];
 
 export default function Home() {
   const showTurkey = !turkeyIsPast();
