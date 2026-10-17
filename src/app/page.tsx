@@ -29,7 +29,7 @@ export default function Home() {
             </h1>
             <p className="serif mt-5 text-[clamp(1.7rem,4vw,2.6rem)] leading-[1.1] text-brass-soft">Christ has already picked you up.</p>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/80">
-              Now let us come get you. {church.name} worships every Sunday at 11:30 AM at {church.corner}, in the heart of St. Louis’ {church.neighborhood}
+              Now let us come get you. {church.name} worships every Sunday at 11:00 AM at {church.corner}, in the heart of St. Louis’ {church.neighborhood}
               {" "}neighborhood, and our church van is getting ready to roll through these streets to bring our neighbors in.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
