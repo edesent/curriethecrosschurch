@@ -9,7 +9,7 @@ import { church, weekly } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Plan a Visit",
-  description: "Visit Currie The Cross Church at 4301 Page Blvd. (Page & Pendleton), St. Louis. Sunday Worship 11:30 AM, Thursday Night Service 6 PM. Come as you are.",
+  description: "Visit Currie The Cross Church at 4301 Page Blvd. (Page & Pendleton), St. Louis. Sunday Worship 11:00 AM, Thursday Night Service 6 PM. Come as you are.",
 };
 
 /** Fill in once the church tells us. */
