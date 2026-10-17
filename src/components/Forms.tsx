@@ -147,7 +147,7 @@ export function RideForm({ dark = false }: { dark?: boolean }) {
       <label className="block">
         <span className="label">For which service?</span>
         <select name="service" className="field">
-          <option>Sunday Worship, 11:30 AM</option>
+          <option>Sunday Worship, 11:00 AM</option>
           <option>Thursday Night Service, 6:00 PM</option>
           <option>Turkey Giveaway & Coat Drive, Nov 21</option>
           <option>Every Sunday</option>
